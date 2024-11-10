@@ -39,7 +39,13 @@ int main(){
 
   // accept client connections
   int clientSocket = accept(serverSocket, nullptr, nullptr);
-
+  
+  if(clientSocket == INVALID_SOCKET){
+    std::cerr << "Accept Failed " << WSAGetLastError() << std::endl;
+    closesocket(serverSocket);
+    WSACleanup();
+    return 1;
+  }
 
 return 0;
 }
