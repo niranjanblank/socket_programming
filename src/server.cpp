@@ -42,7 +42,7 @@ int main(){
     return 1;
   }
 
-    // listen for connections
+// listen for connections
   if(listen(serverSocket, 5) == 0){
     std::cout << "Listening to clients..." << std::endl;
   }
@@ -63,5 +63,19 @@ int main(){
     WSACleanup();
     return 1;
   }
+
+  // receiving data
+  char buffer[200];
+  int bytes_received = recv(clientSocket, buffer, sizeof(buffer),0);
+  if(bytes_received < 0){
+    std::cout << "Client: Error " << WSAGetLastError() << std::endl;
+    return 0;
+  }
+  else {
+    std::string data_received = std::string(buffer);
+    std::cout << "Received data: "<< data_received.substr(0,bytes_received) <<std::endl;
+    std::cout << "Bytes: " << bytes_received << std::endl;
+  }
+  
 return 0;
 }

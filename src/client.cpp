@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 #include<winsock2.h>
 #include <ws2tcpip.h>   // Required for InetPton()                        //
 #pragma comment(lib, "ws2_32.lib")
@@ -39,6 +40,21 @@ int main (int argc, char *argv[]) {
     std::cerr << "Client connection failed" << std::endl;
     WSACleanup();
     return 0;
+  }
+
+  // send data to the server
+  std::string answer;
+  std::cout << "Enter some thing" <<std::endl;
+  std::getline(std::cin, answer);
+
+  size_t byte_count = send(client_socket, answer.c_str(), answer.size(),0);
+
+  if(byte_count == SOCKET_ERROR){
+    std::cerr << "Server sent error :" << WSAGetLastError() << std::endl;
+    return -1;
+  }
+  else{
+    std::cout << "Server: sent " << byte_count <<std::endl;
   }
 
   return 0;
