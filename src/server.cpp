@@ -1,5 +1,6 @@
 #include<iostream>
 #include<winsock2.h>
+#include <ws2tcpip.h>   // Required for InetPton()
 #pragma comment(lib, "ws2_32.lib")
 
 int main(){
@@ -29,13 +30,29 @@ int main(){
   serverAddr.sin_port = htons(8080);
   // inaddr_any is used when we dont want to bind socket to any 
   // particular IP and instead make it listen to all the available IPs
-  serverAddr.sin_addr.s_addr = INADDR_ANY;
-
+  InetPton(AF_INET, "127.0.0.1", &serverAddr.sin_addr.s_addr);
   // binding socker 
-  bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr));
+  if(bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == 0){
+    std::cout << "Socket binding complete" << std::endl;
+  }
+  else{
+    std::cerr << "Socket binding failed" << WSAGetLastError() << std::endl;
+    closesocket(serverSocket);
+    WSACleanup();
+    return 1;
+  }
 
-  // listen for connections
-  listen(serverSocket, 5);
+    // listen for connections
+  if(listen(serverSocket, 5) == 0){
+    std::cout << "Listening to clients..." << std::endl;
+  }
+  else{
+    std::cerr << "Error listening on socket: " <<WSAGetLastError() << std::endl;
+    closesocket(serverSocket);
+    WSACleanup();
+    return 1;
+
+  }
 
   // accept client connections
   int clientSocket = accept(serverSocket, nullptr, nullptr);
@@ -46,6 +63,6 @@ int main(){
     WSACleanup();
     return 1;
   }
-
+  closesocket(serverSocket);
 return 0;
 }
