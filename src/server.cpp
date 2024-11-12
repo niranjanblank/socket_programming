@@ -76,14 +76,25 @@ int main(){
   else if(bytes_received == 0){
     // socket closed
     std::cout << "Client Disconnected" << std::endl;
-    break
       break;;
   }
   else {
     std::string data_received = std::string(buffer);
     std::cout << "Received data: "<< data_received.substr(0,bytes_received) <<std::endl;
     std::cout << "Bytes: " << bytes_received << std::endl;
-  }
+
+    // send data to client
+    std::string confirmation = "Server: Message Received";
+    int byte_count_sent = send(clientSocket, confirmation.c_str(), confirmation.size(),0);
+     if(byte_count_sent == SOCKET_ERROR){
+      std::cerr << "Message sending to client failed :" << WSAGetLastError() << std::endl;
+      break;
+      }
+    else{
+      std::cout << "Server: Message sent to client " << byte_count_sent <<std::endl;
+        }
+
+    }
    
 
   }

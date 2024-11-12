@@ -63,6 +63,20 @@ while(true){
   else{
     std::cout << "Server: sent " << byte_count <<std::endl;
   }
+
+  // receive data from server
+  char buffer[1024];
+  int data_received = recv(client_socket, buffer, 1024,0);
+  if(data_received < 0){
+    std::cerr << "System: Data not received " << WSAGetLastError() << std::endl;
+  }
+  else if(data_received == 0){
+    std::cout << "System: No Data Received" << std::endl;
+  } 
+  else {
+    std::string data_str = std::string(buffer);
+    std::cout << "Data from server : " << data_str.substr(0, data_received) << std::endl;
+  }
 }
 
 // close the socket
