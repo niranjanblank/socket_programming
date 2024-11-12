@@ -43,19 +43,31 @@ int main (int argc, char *argv[]) {
   }
 
   // send data to the server
-  std::string answer;
-  std::cout << "Enter some thing" <<std::endl;
-  std::getline(std::cin, answer);
+  std::string message;
 
-  size_t byte_count = send(client_socket, answer.c_str(), answer.size(),0);
+while(true){
+  std::cout << "Enter message" << std::endl;
+  std::getline(std::cin, message);
 
-  if(byte_count == SOCKET_ERROR){
+  if(message == "exit"){
+    std::cout << "Disconnecting from server" << std::endl;
+    break;
+  }
+
+  // sending message to server
+  size_t byte_count = send(client_socket, message.c_str(), message.size(),0);
+    if(byte_count == SOCKET_ERROR){
     std::cerr << "Server sent error :" << WSAGetLastError() << std::endl;
-    return -1;
+    break;
   }
   else{
     std::cout << "Server: sent " << byte_count <<std::endl;
   }
+}
+
+// close the socket
+closesocket(client_socket);  
+WSACleanup();
 
   return 0;
 }

@@ -66,16 +66,30 @@ int main(){
 
   // receiving data
   char buffer[200];
+  while(true){
+    
   int bytes_received = recv(clientSocket, buffer, sizeof(buffer),0);
   if(bytes_received < 0){
     std::cout << "Client: Error " << WSAGetLastError() << std::endl;
     return 0;
+  }
+  else if(bytes_received == 0){
+    // socket closed
+    std::cout << "Client Disconnected" << std::endl;
+    break
+      break;;
   }
   else {
     std::string data_received = std::string(buffer);
     std::cout << "Received data: "<< data_received.substr(0,bytes_received) <<std::endl;
     std::cout << "Bytes: " << bytes_received << std::endl;
   }
-  
+   
+
+  }
+
+  closesocket(serverSocket);
+  WSACleanup();
+ 
 return 0;
 }
